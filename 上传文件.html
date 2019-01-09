@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <title>上传文件</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="photocopy BG1">
+        <input type="file" name="img" data="result" id="file" class="fileBtn btnH35" /><br/>
+        token:<input type="text" class="token"><br/>
+        bucket:<input type="text" class="bucket"><br/>
+        storageType:<input type="text" class="storageType"><br/>
+        bussModule:<input type="text" class="bussModule"><br/>
+        bussNo:<input type="text" class="bussNo"><br/>
+        fileName:<input type="text" class="fileName"><br/>
+        <img src="" id="result">
+        <!-- <button class="btnH35">aa</button> -->
+        <span>付款凭证</span>
+    </div>
+
+</body>
+<script>
+    $(document).ready(function () {
+        function ProcessFile(id, imgbox) {
+            var file = document.getElementById(id).files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var txt = event.target.result;
+                    document.getElementById(imgbox).src = txt;
+                };
+            }
+            reader.readAsDataURL(file);
+        }
+        $('.fileBtn').change(function () {
+            var id = $(this).attr('id');
+            var imgbox = $(this).attr('data');
+            ProcessFile(id, imgbox)
+        })
+        // ajax上传图片
+        $('.btnH35').on('click', function () {
+            console.log(111)
+            var formData = new FormData();
+            var img_file = document.getElementById('file');
+            var fileObj = img_file.files[0];
+            var token =$('.token').val();
+            var bucket =$('.bucket').val()
+            var storageType =$('.storageType').val()
+            var bussModule =$('.bussModule').val()
+            var bussNo =$('.bussNo').val()
+            var fileName =$('.fileName').val()
+            formData.append("image", fileObj);
+            formData.append("token", token);
+            formData.append("bucket", bucket);
+            formData.append("storageType", storageType);
+            formData.append("bussModule", bussModule);
+            formData.append("bussNo", bussNo);
+            formData.append("fileName",fileName);
+            $.ajax({
+                type:'post', // 提交方式 get/post
+                url:'http://10.1.109.22:8080/h5img/fileupload', // 需要提交的 url
+                dataType: 'json',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                },error:function(data){
+                    console.log(data)
+                }
+
+            })
+        });
+    })
+</script>
+
+</html>
